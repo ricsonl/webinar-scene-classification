@@ -10,7 +10,7 @@ import torchvision.transforms as transforms
 
 def load_model():
     modelbest_path = os.path.join('models', 'modelbest.pth.tar')
-    concater.concat_pth_tar('modelbest_parts', modelbest_path)
+    concater.concat_pth_tar('models/modelbest_parts', modelbest_path)
 
     num_classes = 19
 
@@ -44,3 +44,6 @@ def classify(img_path):
         classes_dict = json.load(json_file)
 
     return (classes_dict[str(preds[0].item())], max[0].item())
+
+if __name__ == '__main__':
+    print(classify('input_samples/095.png'))

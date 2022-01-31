@@ -1,7 +1,7 @@
 import os
 
 def concat_pth_tar(parts_folder_name, output_path):
-    dirname = os.path.dirname(__file__)
+    dirname = os.getcwd()
     model_parts_path = os.path.join(dirname, parts_folder_name)
 
     output_file = open(output_path, 'wb')
