@@ -1,4 +1,4 @@
 segm_output/
-model/modelbest.pth.tar
-model/__pycache__
-models/modelbest_sun-cutout.pth.tar
+models/modelbest.pth.tar
+models/__pycache__
+models/*.pth.tar
