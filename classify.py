@@ -46,6 +46,3 @@ def classify(img_path):
         classes_dict = json.load(json_file)
 
     return (classes_dict[str(preds[0].item())], max[0].item())
-
-if __name__ == '__main__':
-    print(classify('input_samples/095.png'))
