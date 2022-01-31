@@ -25,9 +25,7 @@ def ret_segm_img(img):
     class_dim = 1
     boolean_person_mask = (normalized_mask.argmax(class_dim) == sem_class_to_idx['person'])
 
-    output = img * ~boolean_person_mask
-
-    return output
+    return img * ~boolean_person_mask
 
 def main():
     parser = argparse.ArgumentParser()
