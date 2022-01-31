@@ -1,11 +1,15 @@
+from semantic_seg import ret_segm_img
 import models.concater as concater
 import os
+import json
+import argparse
+from torchvision.io import read_image, ImageReadMode
 import torch
 import torch.nn as nn
 import torchvision.models as models
 from collections import OrderedDict
 
-def main():
+def load_model():
     modelbest_path = os.path.join('models', 'modelbest.pth.tar')
     places365_res50_path = os.path.join('models', 'places365_res50.pth.tar')
 
@@ -18,6 +22,7 @@ def main():
     model = models.__dict__['resnet50'](pretrained=False)
     model_best = torch.load(modelbest_path, map_location=torch.device('cpu'))
     places365_res50 = torch.load(places365_res50_path, map_location=torch.device('cpu'))
+    
     state_dict = places365_res50['state_dict']
     new_state_dict = OrderedDict()
 
@@ -40,7 +45,38 @@ def main():
 
     model.load_state_dict(model_best['state_dict'])
 
-    print(model)
+    return model
+
+def classify(model, img):
+    model.eval()
+    softmax = nn.Softmax(dim=1)
+
+    with open('classes.json') as json_file:
+        classes_dict = json.load(json_file)
+
+    output = model(img)
+    output = softmax(output)
+    max, preds = torch.max(output, 1)
+    print(max, preds)
+
+    if max[0] >= 0.7:
+        return classes_dict[preds[0]]
+
+    return 'uncertain'
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i', '--input', help='path to input image')
+    args = vars(parser.parse_args())
+    img = read_image(args['input'], mode=ImageReadMode.RGB)
+
+    img_segm = ret_segm_img(img)
+
+    model = load_model()
+
+    print(classify(model, img_segm.unsqueeze(0)))
+
 
 if __name__ == '__main__':
     main()
