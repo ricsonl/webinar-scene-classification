@@ -2,6 +2,7 @@ from semantic_seg import ret_segm_img
 import models.concater as concater
 import os
 import json
+import torchvision
 from torchvision.io import read_image, ImageReadMode
 import torch
 import torch.nn as nn
