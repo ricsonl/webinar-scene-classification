@@ -9,8 +9,10 @@ import torch.nn as nn
 import torchvision.transforms as transforms
 
 def load_model():
+    model_parts_path = os.path.join('models', 'modelbest_parts')
     modelbest_path = os.path.join('models', 'modelbest.pth.tar')
-    concater.concat_pth_tar('models/modelbest_parts', modelbest_path)
+
+    concater.concat_pth_tar(model_parts_path, modelbest_path)
 
     num_classes = 19
 
