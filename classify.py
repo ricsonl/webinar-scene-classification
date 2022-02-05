@@ -2,17 +2,20 @@ from semantic_seg import ret_segm_img
 import models.concater as concater
 import os
 import json
+import argparse
 import torchvision
 from torchvision.io import read_image, ImageReadMode
 import torch
 import torch.nn as nn
 import torchvision.transforms as transforms
 
-def load_model():
-    model_parts_path = os.path.join('models', 'modelbest_parts')
-    modelbest_path = os.path.join('models', 'modelbest.pth.tar')
+def load_model(name):
+    model_parts_path = os.path.join('models', f'{name}_parts')
+    modelbest_path = os.path.join('models', f'{name}.pth.tar')
 
-    concater.concat_pth_tar(model_parts_path, modelbest_path)
+    if not os.path.isfile(modelbest_path):
+        print('Concatenating model parts...')
+        concater.concat_pth_tar(model_parts_path, modelbest_path)
 
     num_classes = 19
 
@@ -25,7 +28,7 @@ def load_model():
     return model
 
 def classify(img_path):
-    model = load_model()
+    model = load_model('sun-CO')
     img_segm = ret_segm_img( read_image(img_path, mode=ImageReadMode.RGB) )
 
     transform = transforms.Compose([
@@ -46,3 +49,14 @@ def classify(img_path):
         classes_dict = json.load(json_file)
 
     return (classes_dict[str(preds[0].item())], max[0].item())
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i', '--input', help='path to input image')
+    args = vars(parser.parse_args())
+
+    output = classify(args['input'])
+    print(output)
+
+if __name__ == '__main__':
+    main()
